@@ -14,7 +14,7 @@ if uploaded_file:
     for page in reader.pages:
         content = page.extract_text()
         if content:
-            text += content
+            text += content + "\n"
 
     st.success("✅ PDF processed successfully!")
 
@@ -22,19 +22,34 @@ if uploaded_file:
 
     if query:
         query_lower = query.lower()
+        lines = text.split("\n")
 
+        answer = "No relevant information found."
+
+        # Summary
         if "summary" in query_lower:
             answer = text[:700]
 
+        # Skills
         elif "skills" in query_lower:
-            lines = text.split("\n")
-            skills = [line for line in lines if "skill" in line.lower()]
-            answer = "\n".join(skills[:5]) if skills else text[:500]
+            for i, line in enumerate(lines):
+                if "skill" in line.lower():
+                    answer = "\n".join(lines[i:i+6])
+                    break
 
+        # Education
         elif "education" in query_lower:
-            lines = text.split("\n")
-            edu = [line for line in lines if "education" in line.lower()]
-            answer = "\n".join(edu[:5]) if edu else text[:500]
+            for i, line in enumerate(lines):
+                if "education" in line.lower():
+                    answer = "\n".join(lines[i:i+6])
+                    break
+
+        # Experience
+        elif "experience" in query_lower:
+            for i, line in enumerate(lines):
+                if "experience" in line.lower():
+                    answer = "\n".join(lines[i:i+6])
+                    break
 
         else:
             answer = text[:500]
