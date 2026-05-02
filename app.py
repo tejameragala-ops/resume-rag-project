@@ -11,10 +11,14 @@ if uploaded_file:
     reader = PdfReader(uploaded_file)
     text = ""
 
+    # Extract text correctly
     for page in reader.pages:
         content = page.extract_text()
         if content:
             text += content + "\n"
+
+    # Show extracted text for debugging
+    st.text(text)
 
     st.success("✅ PDF processed successfully!")
 
@@ -26,33 +30,26 @@ if uploaded_file:
 
         answer = "No relevant information found."
 
-        # Summary
         if "summary" in query_lower:
             answer = text[:700]
 
-        # Skills
         elif "skills" in query_lower:
             for i, line in enumerate(lines):
                 if "skill" in line.lower():
                     answer = "\n".join(lines[i:i+6])
                     break
 
-        # Education
         elif "education" in query_lower:
             for i, line in enumerate(lines):
                 if "education" in line.lower():
                     answer = "\n".join(lines[i:i+6])
                     break
 
-        # Experience
         elif "experience" in query_lower:
             for i, line in enumerate(lines):
                 if "experience" in line.lower():
                     answer = "\n".join(lines[i:i+6])
                     break
-
-        else:
-            answer = text[:500]
 
         st.markdown("### 🤖 Answer:")
         st.write(answer)
